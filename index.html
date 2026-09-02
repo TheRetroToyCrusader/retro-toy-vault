@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>Retro Toy Vault</title>
 
   <style>
-    body{
+    body {
       font-family: Arial, sans-serif;
       max-width: 900px;
       margin: auto;
@@ -14,161 +19,132 @@
       background: #f5f5f5;
     }
 
-    .card{
+    h1 {
+      color: #111111;
+    }
+
+    .add-toy-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .card {
       background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    input,
+    select,
+    button {
+      box-sizing: border-box;
+      min-height: 46px;
+      padding: 10px 14px;
+      font-size: 16px;
+    }
+
+    #toyName {
+      width: 250px;
+    }
+
+    #toyLine {
+      width: 250px;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .add-button {
+      background: #6a00ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .add-button:hover {
+      background: #5200c7;
+    }
+
+    #toyList {
+      list-style: none;
+      padding: 0;
+    }
+
+    .toy-item {
+      display: inline-block;
+      width: 210px;
+      margin: 0 16px 25px 0;
       padding: 15px;
-      margin-bottom: 15px;
+      vertical-align: top;
+      background: #fafafa;
+      border: 1px solid #dddddd;
+      border-radius: 12px;
+    }
+
+    .toy-name {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .toy-line {
+      display: block;
+      color: #6a00ff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .toy-photo {
+      display: block;
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
       border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,.1);
     }
 
-    input{
-      padding:10px;
-      width:250px;
+    .delete-button {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      background: #d93025;
+      color: white;
+      border: none;
+      border-radius: 7px;
     }
 
-    button{
-      padding:10px 15px;
-      margin-left:10px;
-      cursor:pointer;
-    }
-  </style>
-</head>
-
-<body>
-
-<h1>🧸 Retro Toy Vault</h1>
-
-<input id="toyName" placeholder="Enter toy name">
-
-<input
-  type="file"
-  id="toyPhoto"
-  accept="image/*"
->
-
-<button onclick="addToy()">
-  Add Toy
-</button>
-
-<div class="card">
-  <h2>My Toys</h2>
-  <ul id="toyList">
-    <li>✅ He-Man</li>
-    <li>✅ Skeletor</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h2>Still Needed</h2>
-  <ul>
-    <li>❌ Man-At-Arms</li>
-    <li>❌ Beast Man</li>
-    <li>❌ Teela</li>
-    <li>❌ Battle Cat</li>
-  </ul>
-</div>
-
-<script>
-
-let toys = [];
-
-try {
-  const savedToys =
-    JSON.parse(localStorage.getItem("retroToyVault"));
-
-  toys = Array.isArray(savedToys)
-    ? savedToys
-    : [];
-} catch (error) {
-  toys = [];
-}
-
-function saveToys() {
-  try {
-    localStorage.setItem(
-      "retroToyVault",
-      JSON.stringify(toys)
-    );
-
-    return true;
-  } catch (error) {
-    alert(
-      "The photograph could not be saved because browser storage is full. " +
-      "Try deleting an existing toy or selecting a smaller photograph."
-    );
-
-    return false;
-  }
-}
-
-function renderToys() {
-  const list =
-    document.getElementById("toyList");
-
-  list.innerHTML = "";
-
-  if (toys.length === 0) {
-    const emptyMessage =
-      document.createElement("li");
-
-    emptyMessage.textContent =
-      "No toys added yet.";
-
-    list.appendChild(emptyMessage);
-
-    return;
-  }
-
-  toys.forEach((toy, index) => {
-    const li =
-      document.createElement("li");
-
-    li.style.marginBottom = "25px";
-    li.style.listStyle = "none";
-
-    const name =
-      document.createElement("strong");
-
-    name.textContent =
-      "✅ " + toy.name;
-
-    li.appendChild(name);
-
-    if (toy.photo) {
-      const image =
-        document.createElement("img");
-
-      image.src = toy.photo;
-      image.alt =
-        "Photo of " + toy.name;
-
-      image.style.display = "block";
-      image.style.width = "150px";
-      image.style.maxWidth = "100%";
-      image.style.height = "auto";
-      image.style.marginTop = "10px";
-      image.style.borderRadius = "10px";
-
-      li.appendChild(image);
+    .delete-button:hover {
+      background: #b3261e;
     }
 
-    const deleteButton =
-      document.createElement("button");
+    .empty-message {
+      color: #666666;
+    }
 
-    deleteButton.type = "button";
-    deleteButton.textContent = "Delete";
+    @media (max-width: 650px) {
+      body {
+        padding: 15px;
+      }
 
-    deleteButton.style.display = "block";
-    deleteButton.style.marginTop = "12px";
-    deleteButton.style.marginLeft = "0";
-    deleteButton.style.padding = "10px 15px";
-    deleteButton.style.background = "#d93025";
-    deleteButton.style.color = "white";
-    deleteButton.style.border = "none";
-    deleteButton.style.borderRadius = "6px";
-    deleteButton.style.cursor = "pointer";
+      .add-toy-area {
+        display: block;
+      }
 
-    deleteButton.addEventListener
-</body>
-</html>
+      #toyName,
+      #toyLine,
+      #toyPhoto,
+      .add-button {
+        display: block;
+        width: 100%;
+        margin-bottom: 12px;
+      }
+
+      .toy-item {
+      
