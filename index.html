@@ -40,7 +40,16 @@
 <h1>🧸 Retro Toy Vault</h1>
 
 <input id="toyName" placeholder="Enter toy name">
-<button onclick="addToy()">Add Toy</button>
+
+<input
+  type="file"
+  id="toyPhoto"
+  accept="image/*"
+>
+
+<button onclick="addToy()">
+  Add Toy
+</button>
 
 <div class="card">
   <h2>My Toys</h2>
@@ -64,7 +73,7 @@
 
 let toys =
   JSON.parse(localStorage.getItem("retroToyVault"))
-  || ["He-Man", "Skeletor"];
+  || [];
 
 function renderToys() {
 
@@ -78,7 +87,16 @@ function renderToys() {
     const li =
       document.createElement("li");
 
-    li.textContent = "✅ " + toy;
+    li.style.marginBottom = "20px";
+
+    li.innerHTML = `
+      <strong>✅ ${toy.name}</strong><br>
+      <img
+        src="${toy.photo}"
+        width="150"
+        style="border-radius:10px;margin-top:10px;"
+      >
+    `;
 
     list.appendChild(li);
 
@@ -88,24 +106,40 @@ function renderToys() {
 
 function addToy() {
 
-  const input =
-    document.getElementById("toyName");
+  const name =
+    document.getElementById("toyName").value.trim();
 
-  const toyName =
-    input.value.trim();
+  const photoInput =
+    document.getElementById("toyPhoto");
 
-  if (!toyName) return;
+  const file =
+    photoInput.files[0];
 
-  toys.push(toyName);
+  if (!name || !file) return;
 
-  localStorage.setItem(
-    "retroToyVault",
-    JSON.stringify(toys)
-  );
+  const reader =
+    new FileReader();
 
-  renderToys();
+  reader.onload = function(e) {
 
-  input.value = "";
+    toys.push({
+      name: name,
+      photo: e.target.result
+    });
+
+    localStorage.setItem(
+      "retroToyVault",
+      JSON.stringify(toys)
+    );
+
+    renderToys();
+
+    document.getElementById("toyName").value = "";
+    document.getElementById("toyPhoto").value = "";
+
+  };
+
+  reader.readAsDataURL(file);
 
 }
 
