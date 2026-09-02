@@ -75,6 +75,13 @@ let toys =
   JSON.parse(localStorage.getItem("retroToyVault"))
   || [];
 
+function saveToys() {
+  localStorage.setItem(
+    "retroToyVault",
+    JSON.stringify(toys)
+  );
+}
+
 function renderToys() {
 
   const list =
@@ -87,27 +94,50 @@ function renderToys() {
     const li =
       document.createElement("li");
 
-    li.style.marginBottom = "20px";
+    li.style.marginBottom = "25px";
 
-    li.innerHTML = `
-  <strong>✅ ${toy.name}</strong><br>
+    const name =
+      document.createElement("strong");
 
-  ${toy.photo}
+    name.textContent = "✅ " + toy.name;
 
-  <br><br>
+    li.appendChild(name);
 
-  <button onclick="deleteToy(${index})">
-    Delete
-  </button>
-`;"
-    width="150"
-    styleindex})">
-    Delete
-  </button>
-`;"
-      >
-    `;
+    if (toy.photo) {
 
+      const image =
+        document.createElement("img");
+
+      image.src = toy.photo;
+      image.alt = "Photo of " + toy.name;
+      image.width = 150;
+
+      image.style.display = "block";
+      image.style.marginTop = "10px";
+      image.style.borderRadius = "10px";
+
+      li.appendChild(image);
+    }
+
+    const deleteButton =
+      document.createElement("button");
+
+    deleteButton.textContent = "Delete";
+    deleteButton.type = "button";
+
+    deleteButton.style.display = "block";
+    deleteButton.style.marginTop = "12px";
+    deleteButton.style.marginLeft = "0";
+    deleteButton.style.background = "#d93025";
+    deleteButton.style.color = "white";
+    deleteButton.style.border = "none";
+    deleteButton.style.borderRadius = "6px";
+
+    deleteButton.onclick = function() {
+      deleteToy(index);
+    };
+
+    li.appendChild(deleteButton);
     list.appendChild(li);
 
   });
@@ -116,16 +146,27 @@ function renderToys() {
 
 function addToy() {
 
-  const name =
-    document.getElementById("toyName").value.trim();
+  const nameInput =
+    document.getElementById("toyName");
 
   const photoInput =
     document.getElementById("toyPhoto");
 
+  const name =
+    nameInput.value.trim();
+
   const file =
     photoInput.files[0];
 
-  if (!name || !file) return;
+  if (!name) {
+    alert("Please enter a toy name.");
+    return;
+  }
+
+  if (!file) {
+    alert("Please choose a photograph.");
+    return;
+  }
 
   const reader =
     new FileReader();
@@ -137,29 +178,38 @@ function addToy() {
       photo: e.target.result
     });
 
-    localStorage.setItem(
-      "retroToyVault",
-      JSON.stringify(toys)
-    );
-function deleteToy(index) {
-
-  toys.splice(index, 1);
-
-  localStorage.setItem(
-    "retroToyVault",
-    JSON.stringify(toys)
-  );
-
-  renderToys();
-}
+    saveToys();
     renderToys();
 
-    document.getElementById("toyName").value = "";
-    document.getElementById("toyPhoto").value = "";
+    nameInput.value = "";
+    photoInput.value = "";
 
   };
 
   reader.readAsDataURL(file);
+
+}
+
+function deleteToy(index) {
+
+  const toyName =
+    toys[index].name;
+
+  const confirmed =
+    confirm(
+      "Are you sure you want to delete "
+      + toyName
+      + "?"
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  toys.splice(index, 1);
+
+  saveToys();
+  renderToys();
 
 }
 
