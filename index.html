@@ -71,48 +71,82 @@
 
 <script>
 
-let toys =
-  JSON.parse(localStorage.getItem("retroToyVault"))
-  || [];
+let toys = [];
+
+try {
+  const savedToys =
+    JSON.parse(localStorage.getItem("retroToyVault"));
+
+  toys = Array.isArray(savedToys)
+    ? savedToys
+    : [];
+} catch (error) {
+  toys = [];
+}
 
 function saveToys() {
-  localStorage.setItem(
-    "retroToyVault",
-    JSON.stringify(toys)
-  );
+  try {
+    localStorage.setItem(
+      "retroToyVault",
+      JSON.stringify(toys)
+    );
+
+    return true;
+  } catch (error) {
+    alert(
+      "The photograph could not be saved because browser storage is full. " +
+      "Try deleting an existing toy or selecting a smaller photograph."
+    );
+
+    return false;
+  }
 }
 
 function renderToys() {
-
   const list =
     document.getElementById("toyList");
 
   list.innerHTML = "";
 
-  toys.forEach((toy, index) => {
+  if (toys.length === 0) {
+    const emptyMessage =
+      document.createElement("li");
 
+    emptyMessage.textContent =
+      "No toys added yet.";
+
+    list.appendChild(emptyMessage);
+
+    return;
+  }
+
+  toys.forEach((toy, index) => {
     const li =
       document.createElement("li");
 
     li.style.marginBottom = "25px";
+    li.style.listStyle = "none";
 
     const name =
       document.createElement("strong");
 
-    name.textContent = "✅ " + toy.name;
+    name.textContent =
+      "✅ " + toy.name;
 
     li.appendChild(name);
 
     if (toy.photo) {
-
       const image =
         document.createElement("img");
 
       image.src = toy.photo;
-      image.alt = "Photo of " + toy.name;
-      image.width = 150;
+      image.alt =
+        "Photo of " + toy.name;
 
       image.style.display = "block";
+      image.style.width = "150px";
+      image.style.maxWidth = "100%";
+      image.style.height = "auto";
       image.style.marginTop = "10px";
       image.style.borderRadius = "10px";
 
@@ -122,99 +156,19 @@ function renderToys() {
     const deleteButton =
       document.createElement("button");
 
-    deleteButton.textContent = "Delete";
     deleteButton.type = "button";
+    deleteButton.textContent = "Delete";
 
     deleteButton.style.display = "block";
     deleteButton.style.marginTop = "12px";
     deleteButton.style.marginLeft = "0";
+    deleteButton.style.padding = "10px 15px";
     deleteButton.style.background = "#d93025";
     deleteButton.style.color = "white";
     deleteButton.style.border = "none";
     deleteButton.style.borderRadius = "6px";
+    deleteButton.style.cursor = "pointer";
 
-    deleteButton.onclick = function() {
-      deleteToy(index);
-    };
-
-    li.appendChild(deleteButton);
-    list.appendChild(li);
-
-  });
-
-}
-
-function addToy() {
-
-  const nameInput =
-    document.getElementById("toyName");
-
-  const photoInput =
-    document.getElementById("toyPhoto");
-
-  const name =
-    nameInput.value.trim();
-
-  const file =
-    photoInput.files[0];
-
-  if (!name) {
-    alert("Please enter a toy name.");
-    return;
-  }
-
-  if (!file) {
-    alert("Please choose a photograph.");
-    return;
-  }
-
-  const reader =
-    new FileReader();
-
-  reader.onload = function(e) {
-
-    toys.push({
-      name: name,
-      photo: e.target.result
-    });
-
-    saveToys();
-    renderToys();
-
-    nameInput.value = "";
-    photoInput.value = "";
-
-  };
-
-  reader.readAsDataURL(file);
-
-}
-
-function deleteToy(index) {
-
-  const toyName =
-    toys[index].name;
-
-  const confirmed =
-    confirm(
-      "Are you sure you want to delete "
-      + toyName
-      + "?"
-    );
-
-  if (!confirmed) {
-    return;
-  }
-
-  toys.splice(index, 1);
-
-  saveToys();
-  renderToys();
-
-}
-
-renderToys();
-
-</script>
+    deleteButton.addEventListener
 </body>
 </html>
