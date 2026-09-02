@@ -61,26 +61,56 @@
 </div>
 
 <script>
+
+let toys =
+  JSON.parse(localStorage.getItem("retroToyVault"))
+  || ["He-Man", "Skeletor"];
+
+function renderToys() {
+
+  const list =
+    document.getElementById("toyList");
+
+  list.innerHTML = "";
+
+  toys.forEach(toy => {
+
+    const li =
+      document.createElement("li");
+
+    li.textContent = "✅ " + toy;
+
+    list.appendChild(li);
+
+  });
+
+}
+
 function addToy() {
 
+  const input =
+    document.getElementById("toyName");
+
   const toyName =
-    document.getElementById("toyName").value;
+    input.value.trim();
 
-  if (toyName === "") return;
+  if (!toyName) return;
 
-  const li = document.createElement("li");
+  toys.push(toyName);
 
-  li.textContent = "✅ " + toyName;
+  localStorage.setItem(
+    "retroToyVault",
+    JSON.stringify(toys)
+  );
 
-  document
-    .getElementById("toyList")
-    .appendChild(li);
+  renderToys();
 
-  document
-    .getElementById("toyName")
-    .value = "";
+  input.value = "";
+
 }
-</script>
 
+renderToys();
+
+</script>
 </body>
 </html>
