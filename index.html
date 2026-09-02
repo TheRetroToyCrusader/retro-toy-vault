@@ -215,7 +215,11 @@
         Other
       </option>
     </select>
-
+<input
+  id="toyValue"
+  type="number"
+  placeholder="Value (£)"
+>
     <input
       id="toyPhoto"
       type="file"
@@ -235,6 +239,9 @@
 
   <div class="card">
   <h2>Collection Summary</h2>
+    <p id="totalValue">
+  Collection Value: £0
+</p>
 
   <p id="totalToys">Total Toys: 0</p>
 
@@ -303,6 +310,18 @@
   "totalToys"
 ).textContent =
   "Total Toys: " + toys.length;
+      const totalValue =
+  toys.reduce(
+    (sum, toy) =>
+      sum + Number(toy.value || 0),
+    0
+  );
+
+document.getElementById(
+  "totalValue"
+).textContent =
+  "Collection Value: £" +
+  totalValue;
 
 const motuCount =
   toys.filter(
@@ -362,6 +381,19 @@ document.getElementById(
           toy.line || "Uncategorised";
 
         li.appendChild(toyLine);
+        const toyValue =
+  document.createElement("div");
+
+toyValue.textContent =
+  "£" + (toy.value || 0);
+
+toyValue.style.fontWeight =
+  "bold";
+
+toyValue.style.marginBottom =
+  "10px";
+
+li.appendChild(toyValue);
 
         if (toy.photo) {
           const image =
@@ -525,6 +557,10 @@ document.getElementById(
 
       const toyLine =
         lineInput.value;
+      const value =
+  document.getElementById(
+    "toyValue"
+  ).value;
 
       const file =
         photoInput.files[0];
@@ -568,10 +604,11 @@ document.getElementById(
           await compressPhoto(file);
 
         toys.push({
-          name: name,
-          line: toyLine,
-          photo: compressedPhoto
-        });
+  name: name,
+  line: toyLine,
+  value: value,
+  photo: compressedPhoto
+});
 
         const saved =
           saveToys();
