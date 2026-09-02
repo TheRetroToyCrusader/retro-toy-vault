@@ -82,7 +82,7 @@ function renderToys() {
 
   list.innerHTML = "";
 
-  toys.forEach(toy => {
+  toys.forEach((toy, index) => {
 
     const li =
       document.createElement("li");
@@ -90,11 +90,21 @@ function renderToys() {
     li.style.marginBottom = "20px";
 
     li.innerHTML = `
-      <strong>✅ ${toy.name}</strong><br>
-      <img
-        src="${toy.photo}"
-        width="150"
-        style="border-radius:10px;margin-top:10px;"
+  <strong>✅ ${toy.name}</strong><br>
+
+  ${toy.photo}
+
+  <br><br>
+
+  <button onclick="deleteToy(${index})">
+    Delete
+  </button>
+`;"
+    width="150"
+    styleindex})">
+    Delete
+  </button>
+`;"
       >
     `;
 
@@ -131,7 +141,17 @@ function addToy() {
       "retroToyVault",
       JSON.stringify(toys)
     );
+function deleteToy(index) {
 
+  toys.splice(index, 1);
+
+  localStorage.setItem(
+    "retroToyVault",
+    JSON.stringify(toys)
+  );
+
+  renderToys();
+}
     renderToys();
 
     document.getElementById("toyName").value = "";
