@@ -6,28 +6,43 @@
   <title>Retro Toy Vault</title>
 
   <style>
-    body{
-      font-family:Arial,sans-serif;
-      max-width:900px;
-      margin:auto;
-      padding:20px;
-      background:#f5f5f5;
-    }
+    <body>
 
-    .card{
-      background:white;
-      padding:15px;
-      margin-bottom:15px;
-      border-radius:10px;
-      box-shadow:0 2px 5px rgba(0,0,0,.1);
-    }
+<h1>🧸 Retro Toy Vault</h1>
 
-    h1{
-      color:#6a00ff;
-    }
-  </style>
-</head>
-<body>
+<input id="toyName" placeholder="Enter toy name">
+
+<button onclick="addToy()">
+Add Toy
+</button>
+
+<ul id="toyList">
+</ul>
+
+<script>
+function addToy() {
+
+  const toyName =
+    document.getElementById("toyName").value;
+
+  if(toyName === "") return;
+
+  const li =
+    document.createElement("li");
+
+  li.textContent = toyName;
+
+  document
+    .getElementById("toyList")
+    .appendChild(li);
+
+  document
+    .getElementById("toyName")
+    .value = "";
+}
+</script>
+
+</body>
 
 <h1>🧸 Retro Toy Vault</h1>
 
