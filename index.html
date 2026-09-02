@@ -217,7 +217,11 @@
     </select>
 <input
   id="toyValue"
-  <select id="toyCondition">
+  type="number"
+  placeholder="Value (£)"
+>
+
+<select id="toyCondition">
   <option value="">
     Condition
   </option>
@@ -241,9 +245,7 @@
   <option value="Poor">
     Poor
   </option>
-</select>
-  type="number"
-  placeholder="Value (£)"
+</select>"
 >
     <input
       id="toyPhoto"
@@ -660,6 +662,9 @@ li.appendChild(toyCondition);
         nameInput.value = "";
         lineInput.value = "";
         document.getElementById(
+          document.getElementById(
+  "toyValue"
+).value = "";
   "toyCondition"
 ).value = "";
         photoInput.value = "";
