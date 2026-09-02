@@ -147,4 +147,465 @@
       }
 
       .toy-item {
-      
+        display: block;
+        width: auto;
+        margin-right: 0;
+      }
+
+      .toy-photo {
+        height: auto;
+        max-height: 350px;
+        object-fit: contain;
+        background: white;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🧸 Retro Toy Vault</h1>
+
+  <div class="add-toy-area">
+
+    <input
+      id="toyName"
+      type="text"
+      placeholder="Enter toy name"
+    >
+
+    <select id="toyLine">
+      <option value="">
+        Choose toy line
+      </option>
+
+      <option value="Masters of the Universe">
+        Masters of the Universe
+      </option>
+
+      <option value="Teenage Mutant Ninja Turtles">
+        Teenage Mutant Ninja Turtles
+      </option>
+
+      <option value="Star Wars">
+        Star Wars
+      </option>
+
+      <option value="ThunderCats">
+        ThunderCats
+      </option>
+
+      <option value="Transformers">
+        Transformers
+      </option>
+
+      <option value="The Real Ghostbusters">
+        The Real Ghostbusters
+      </option>
+
+      <option value="Action Force">
+        Action Force
+      </option>
+
+      <option value="Power Rangers">
+        Power Rangers
+      </option>
+
+      <option value="Other">
+        Other
+      </option>
+    </select>
+
+    <input
+      id="toyPhoto"
+      type="file"
+      accept="image/*"
+      capture="environment"
+    >
+
+    <button
+      class="add-button"
+      type="button"
+      onclick="addToy()"
+    >
+      Add Toy
+    </button>
+
+  </div>
+
+  <div class="card">
+    <h2>My Toys</h2>
+
+    <ul id="toyList"></ul>
+  </div>
+
+  <div class="card">
+    <h2>Still Needed</h2>
+
+    <ul>
+      <li>❌ Man-At-Arms</li>
+      <li>❌ Beast Man</li>
+      <li>❌ Teela</li>
+      <li>❌ Battle Cat</li>
+    </ul>
+  </div>
+
+  <script>
+    let toys = [];
+
+    try {
+      const savedToys =
+        JSON.parse(
+          localStorage.getItem("retroToyVault")
+        );
+
+      toys =
+        Array.isArray(savedToys)
+          ? savedToys
+          : [];
+
+    } catch (error) {
+      toys = [];
+    }
+
+    function saveToys() {
+      try {
+        localStorage.setItem(
+          "retroToyVault",
+          JSON.stringify(toys)
+        );
+
+        return true;
+
+      } catch (error) {
+        alert(
+          "The toy could not be saved because browser storage is full. " +
+          "Try deleting an existing toy or using a smaller photograph."
+        );
+
+        return false;
+      }
+    }
+
+    function renderToys() {
+      const list =
+        document.getElementById("toyList");
+
+      list.innerHTML = "";
+
+      if (toys.length === 0) {
+        const emptyMessage =
+          document.createElement("li");
+
+        emptyMessage.className =
+          "empty-message";
+
+        emptyMessage.textContent =
+          "No toys added yet.";
+
+        list.appendChild(emptyMessage);
+
+        return;
+      }
+
+      toys.forEach((toy, index) => {
+        const li =
+          document.createElement("li");
+
+        li.className =
+          "toy-item";
+
+        const toyName =
+          document.createElement("strong");
+
+        toyName.className =
+          "toy-name";
+
+        toyName.textContent =
+          "✅ " + toy.name;
+
+        li.appendChild(toyName);
+
+        const toyLine =
+          document.createElement("span");
+
+        toyLine.className =
+          "toy-line";
+
+        toyLine.textContent =
+          toy.line || "Uncategorised";
+
+        li.appendChild(toyLine);
+
+        if (toy.photo) {
+          const image =
+            document.createElement("img");
+
+          image.src =
+            toy.photo;
+
+          image.alt =
+            "Photo of " + toy.name;
+
+          image.className =
+            "toy-photo";
+
+          li.appendChild(image);
+        }
+
+        const deleteButton =
+          document.createElement("button");
+
+        deleteButton.type =
+          "button";
+
+        deleteButton.className =
+          "delete-button";
+
+        deleteButton.textContent =
+          "Delete";
+
+        deleteButton.onclick =
+          function () {
+            deleteToy(index);
+          };
+
+        li.appendChild(deleteButton);
+        list.appendChild(li);
+      });
+    }
+
+    function compressPhoto(file) {
+      return new Promise(
+        (resolve, reject) => {
+          const reader =
+            new FileReader();
+
+          reader.onload =
+            function (event) {
+              const image =
+                new Image();
+
+              image.onload =
+                function () {
+                  const maximumSize =
+                    800;
+
+                  let newWidth =
+                    image.width;
+
+                  let newHeight =
+                    image.height;
+
+                  if (
+                    newWidth > maximumSize ||
+                    newHeight > maximumSize
+                  ) {
+                    const scale =
+                      Math.min(
+                        maximumSize / newWidth,
+                        maximumSize / newHeight
+                      );
+
+                    newWidth =
+                      Math.round(
+                        newWidth * scale
+                      );
+
+                    newHeight =
+                      Math.round(
+                        newHeight * scale
+                      );
+                  }
+
+                  const canvas =
+                    document.createElement(
+                      "canvas"
+                    );
+
+                  canvas.width =
+                    newWidth;
+
+                  canvas.height =
+                    newHeight;
+
+                  const context =
+                    canvas.getContext("2d");
+
+                  context.drawImage(
+                    image,
+                    0,
+                    0,
+                    newWidth,
+                    newHeight
+                  );
+
+                  const compressedPhoto =
+                    canvas.toDataURL(
+                      "image/jpeg",
+                      0.65
+                    );
+
+                  resolve(
+                    compressedPhoto
+                  );
+                };
+
+              image.onerror =
+                function () {
+                  reject(
+                    new Error(
+                      "The photograph could not be opened."
+                    )
+                  );
+                };
+
+              image.src =
+                event.target.result;
+            };
+
+          reader.onerror =
+            function () {
+              reject(
+                new Error(
+                  "The photograph could not be read."
+                )
+              );
+            };
+
+          reader.readAsDataURL(file);
+        }
+      );
+    }
+
+    async function addToy() {
+      const nameInput =
+        document.getElementById(
+          "toyName"
+        );
+
+      const lineInput =
+        document.getElementById(
+          "toyLine"
+        );
+
+      const photoInput =
+        document.getElementById(
+          "toyPhoto"
+        );
+
+      const name =
+        nameInput.value.trim();
+
+      const toyLine =
+        lineInput.value;
+
+      const file =
+        photoInput.files[0];
+
+      if (!name) {
+        alert(
+          "Please enter a toy name."
+        );
+
+        return;
+      }
+
+      if (!toyLine) {
+        alert(
+          "Please choose a toy line."
+        );
+
+        return;
+      }
+
+      if (!file) {
+        alert(
+          "Please choose or take a photograph."
+        );
+
+        return;
+      }
+
+      if (
+        !file.type.startsWith("image/")
+      ) {
+        alert(
+          "Please choose an image file."
+        );
+
+        return;
+      }
+
+      try {
+        const compressedPhoto =
+          await compressPhoto(file);
+
+        toys.push({
+          name: name,
+          line: toyLine,
+          photo: compressedPhoto
+        });
+
+        const saved =
+          saveToys();
+
+        if (!saved) {
+          toys.pop();
+          return;
+        }
+
+        renderToys();
+
+        nameInput.value = "";
+        lineInput.value = "";
+        photoInput.value = "";
+
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function deleteToy(index) {
+      const toy =
+        toys[index];
+
+      if (!toy) {
+        return;
+      }
+
+      const confirmed =
+        confirm(
+          "Are you sure you want to delete " +
+          toy.name +
+          "?"
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      const deletedToy =
+        toys.splice(index, 1)[0];
+
+      const saved =
+        saveToys();
+
+      if (!saved) {
+        toys.splice(
+          index,
+          0,
+          deletedToy
+        );
+
+        return;
+      }
+
+      renderToys();
+    }
+
+    renderToys();
+  </script>
+
+</body>
+</html>
