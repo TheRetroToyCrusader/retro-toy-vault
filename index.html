@@ -234,7 +234,17 @@
   </div>
 
   <div class="card">
-    <h2>My Toys</h2>
+  <h2>Collection Summary</h2>
+
+  <p id="totalToys">Total Toys: 0</p>
+
+  <p id="motuCount">
+    Masters of the Universe: 0
+  </p>
+</div>
+
+<div class="card">
+  <h2>My Toys</h2>
 
     <ul id="toyList"></ul>
   </div>
@@ -289,6 +299,23 @@
     function renderToys() {
       const list =
         document.getElementById("toyList");
+      document.getElementById(
+  "totalToys"
+).textContent =
+  "Total Toys: " + toys.length;
+
+const motuCount =
+  toys.filter(
+    toy =>
+      toy.line ===
+      "Masters of the Universe"
+  ).length;
+
+document.getElementById(
+  "motuCount"
+).textContent =
+  "Masters of the Universe: " +
+  motuCount;
 
       list.innerHTML = "";
 
