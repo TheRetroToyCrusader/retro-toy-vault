@@ -217,6 +217,31 @@
     </select>
 <input
   id="toyValue"
+  <select id="toyCondition">
+  <option value="">
+    Condition
+  </option>
+
+  <option value="Mint">
+    Mint
+  </option>
+
+  <option value="Excellent">
+    Excellent
+  </option>
+
+  <option value="Good">
+    Good
+  </option>
+
+  <option value="Fair">
+    Fair
+  </option>
+
+  <option value="Poor">
+    Poor
+  </option>
+</select>
   type="number"
   placeholder="Value (£)"
 >
@@ -394,7 +419,14 @@ toyValue.style.marginBottom =
   "10px";
 
 li.appendChild(toyValue);
+const toyCondition =
+  document.createElement("div");
 
+toyCondition.textContent =
+  "Condition: " +
+  (toy.condition || "Unknown");
+
+li.appendChild(toyCondition);
         if (toy.photo) {
           const image =
             document.createElement("img");
@@ -561,6 +593,10 @@ li.appendChild(toyValue);
   document.getElementById(
     "toyValue"
   ).value;
+      const condition =
+  document.getElementById(
+    "toyCondition"
+  ).value;
 
       const file =
         photoInput.files[0];
@@ -607,6 +643,7 @@ li.appendChild(toyValue);
   name: name,
   line: toyLine,
   value: value,
+  condition: condition,
   photo: compressedPhoto
 });
 
@@ -622,6 +659,9 @@ li.appendChild(toyValue);
 
         nameInput.value = "";
         lineInput.value = "";
+        document.getElementById(
+  "toyCondition"
+).value = "";
         photoInput.value = "";
 
       } catch (error) {
